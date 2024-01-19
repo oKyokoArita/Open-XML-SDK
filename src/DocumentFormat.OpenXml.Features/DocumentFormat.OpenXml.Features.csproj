@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsShipped>true</IsShipped>
+    <IncludeFrameworkShims>true</IncludeFrameworkShims>
+    <TargetFrameworks>$(ProductTargetFrameworks)</TargetFrameworks>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Summary>Provides additional features that add functionality to the Open XML SDK.</Summary>
+    <Description>Provides additional functionality to the Open XML SDK.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\DocumentFormat.OpenXml.Framework\SimpleTypes\HexStringFactory.cs" Link="HexStringFactory.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DocumentFormat.OpenXml\DocumentFormat.OpenXml.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+      <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>
