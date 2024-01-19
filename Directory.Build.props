@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <IsShipped>false</IsShipped>
+    <NoWarn>$(NoWarn);SA0001</NoWarn>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <NoWarn>$(NoWarn);CS0436</NoWarn>
+
+    <!-- We want to use experimental APIs internally -->
+    <NoWarn>$(NoWarn);OOXML0001;OOXML0002;OOXML0003;OOXML0004</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <IncludeSourceGenerator>false</IncludeSourceGenerator>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <InformationalVersion>$(GitVersion_InformationalVersion)</InformationalVersion>
+    <FileVersion>$(GitVersion_MajorMinorPatch)</FileVersion>
+    <AssemblyVersion>$(GitVersion_AssemblySemVer)</AssemblyVersion>
+    <Version>$(GitVersion_NuGetVersionV2)</Version>
+  </PropertyGroup>
+
+  <!-- Due to the need to test .NET 3.5 and .NET 4.0 builds, we have separate configurations that
+       allow us to build and test them. These are mostly done in CI, but may be useful at dev time. -->
+  <Choose>
+    <When Condition=" '$(ProjectLoadStyle)' == 'net35' ">
+      <PropertyGroup>
+        <!-- We have some internal types that conflict -->
+        <NoWarn>$(NoWarn);CS1685</NoWarn>
+        <ProductTargetFrameworks>net35</ProductTargetFrameworks>
+        <FrameworkTargetFrameworks>net35</FrameworkTargetFrameworks>
+        <TestTargetFrameworks>net462</TestTargetFrameworks>
+        <AssetsTargetFrameworks>net462</AssetsTargetFrameworks>
+        <LatestTargetFramework>net462</LatestTargetFramework>
+        <SamplesFrameworks>net472</SamplesFrameworks>
+      </PropertyGroup>
+    </When>
+    <When Condition=" '$(ProjectLoadStyle)' == 'net40' ">
+      <PropertyGroup>
+        <!-- We have some internal types that conflict -->
+        <NoWarn>$(NoWarn);CS1685</NoWarn>
+        <ProductTargetFrameworks>net40</ProductTargetFrameworks>
+        <FrameworkTargetFrameworks>net40</FrameworkTargetFrameworks>
+        <TestTargetFrameworks>net462</TestTargetFrameworks>
+        <AssetsTargetFrameworks>net462</AssetsTargetFrameworks>
+        <LatestTargetFramework>net462</LatestTargetFramework>
+        <SamplesFrameworks>net472</SamplesFrameworks>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <ProductTargetFrameworks>netstandard2.0;net8.0;net35;net40;net46</ProductTargetFrameworks>
+        <FrameworkTargetFrameworks>netstandard2.0;net6.0;net8.0;net35;net40;net46</FrameworkTargetFrameworks>
+        <AssetsTargetFrameworks>netstandard2.0;net462</AssetsTargetFrameworks>
+        <TestTargetFrameworks>net8.0</TestTargetFrameworks>
+        <TestTargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TestTargetFrameworks);net462</TestTargetFrameworks>
+        <LatestTargetFramework>net8.0</LatestTargetFramework>
+        <SamplesFrameworks>net8.0</SamplesFrameworks>
+        <SamplesFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TestTargetFrameworks);net472</SamplesFrameworks>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+  <PropertyGroup>
+    <SupportsNetStandard>false</SupportsNetStandard>
+    <SupportsNetStandard Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'netstandard2.0'))">true</SupportsNetStandard>
+    <IsFramework>false</IsFramework>
+    <IsFramework Condition=" '$(TargetFramework)' == 'net35' OR $(TargetFramework.StartsWith('net4')) ">true</IsFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <LangVersion>11.0</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)DocumentFormat.OpenXml.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <OutputFullPath>$(MSBuildThisFileDirectory)</OutputFullPath>
+    <OutputDrop Condition=" '$(OutputDrop)' == '' ">$(OutputFullPath)bin\$(Configuration)\</OutputDrop>
+    <OutputPath>$(OutputDrop)\$(MSBuildProjectName)\</OutputPath>
+    <BaseIntermediateOutputPath>$(OutputFullPath)obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <IsTestProject Condition=" '$(IsTestProject)' == '' ">false</IsTestProject>
+    <IsBenchmarkProject Condition=" '$(IsBenchmarkProject)' == '' ">false</IsBenchmarkProject>
+  </PropertyGroup>
+
+</Project>
